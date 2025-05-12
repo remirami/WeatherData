@@ -1,0 +1,101 @@
+<% content_for :title do %>
+  <%= @city %> (<%= @current_weather[:country] %>) Weather
+<% end %>
+
+<div class="w-full mx-auto px-4">
+  <div class="text-center mt-8">
+    <div class="flex items-center justify-center gap-2">
+      <img src="https://openweathermap.org/img/wn/<%= @current_weather[:icon] %>@2x.png" alt="Weather icon" class="w-16 h-16">
+      <span class="text-xl"><%= @city %></span>
+    </div>
+    <div class="mt-1">
+      <span class="text-gray-600">(<%= @current_weather[:country] %>)</span>
+    </div>
+    <p class="text-gray-600 mt-1">Current Weather Conditions</p>
+  </div>
+
+  <div class="weather-container mt-8">
+    <div class="current-weather">
+      <div class="mb-8">
+        <div class="text-6xl font-light mb-2"><%= @current_weather[:temperature] %>°C</div>
+        <div class="text-gray-600">Feels like <%= @current_weather[:feels_like] %>°C</div>
+      </div>
+
+      <div class="weather-info grid grid-cols-2 md:grid-cols-3 gap-6">
+        <div>
+          <h3 class="font-semibold">Conditions</h3>
+          <p><%= @current_weather[:description]&.capitalize %></p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold">Humidity</h3>
+          <p><%= @current_weather[:humidity] %>%</p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold">Pressure</h3>
+          <p><%= @current_weather[:pressure] %> hPa</p>
+        </div>
+
+        <div>
+          <h3 class="font-semibold">Wind</h3>
+          <p><%= @current_weather[:wind_speed] %> m/s <%= @current_weather[:wind_direction] %></p>
+        </div>
+
+        <% if @current_weather[:visibility] %>
+          <div>
+            <h3 class="font-semibold">Visibility</h3>
+            <p><%= @current_weather[:visibility] / 1000 %> km</p>
+          </div>
+        <% end %>
+
+        <% if @current_weather[:clouds] %>
+          <div>
+            <h3 class="font-semibold">Clouds</h3>
+            <p><%= @current_weather[:clouds] %>%</p>
+          </div>
+        <% end %>
+
+        <% if @current_weather[:rain]&.> 0 %>
+          <div>
+            <h3 class="font-semibold">Rain</h3>
+            <p><%= @current_weather[:rain] %> mm</p>
+          </div>
+        <% end %>
+
+        <% if @current_weather[:snow]&.> 0 %>
+          <div>
+            <h3 class="font-semibold">Snow</h3>
+            <p><%= @current_weather[:snow] %> mm</p>
+          </div>
+        <% end %>
+      </div>
+
+      <% if @current_weather[:sunrise] && @current_weather[:sunset] %>
+        <div class="sun-times">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-semibold">Sunrise</h3>
+              <p><%= Time.at(@current_weather[:sunrise]).strftime("%H:%M") %></p>
+            </div>
+            <div>
+              <h3 class="font-semibold">Sunset</h3>
+              <p><%= Time.at(@current_weather[:sunset]).strftime("%H:%M") %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="relative left-1/2 w-screen transform -translate-x-1/2">
+      <div class="forecast-section max-w-screen-xl mx-auto px-4">
+        <h2 class="text-xl font-bold mb-4">5-Day Forecast</h2>
+        <%= render 'results_table' %>
+      </div>
+    </div>
+
+  <div class="mt-4 flex justify-center">
+    <%= link_to 'Back', root_path, class: 'back-link' %>
+  </div>
+  </div>
+</div>
