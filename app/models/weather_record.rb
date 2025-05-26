@@ -23,17 +23,17 @@ class WeatherRecord < ApplicationRecord
   # Class methods
   def self.from_openweather_data(data, location)
     create!(
-      temperature: data['main']['temp'],
-      feels_like: data['main']['feels_like'],
-      humidity: data['main']['humidity'],
-      pressure: data['main']['pressure'],
-      wind_speed: data['wind']['speed'],
-      wind_direction: data['wind']['deg'],
-      conditions: data['weather'].first['description'],
-      weather_code: data['weather'].first['id'],
-      clouds: data['clouds']['all'],
-      visibility: data['visibility'],
-      recorded_at: Time.at(data['dt']),
+      temperature: data["main"]["temp"],
+      feels_like: data["main"]["feels_like"],
+      humidity: data["main"]["humidity"],
+      pressure: data["main"]["pressure"],
+      wind_speed: data["wind"]["speed"],
+      wind_direction: data["wind"]["deg"],
+      conditions: data["weather"].first["description"],
+      weather_code: data["weather"].first["id"],
+      clouds: data["clouds"]["all"],
+      visibility: data["visibility"],
+      recorded_at: Time.at(data["dt"]),
       location: location
     )
   end
@@ -74,47 +74,47 @@ class WeatherRecord < ApplicationRecord
   def weather_icon
     case weather_code
     when 200..232
-      'thunderstorm'
+      "thunderstorm"
     when 300..321
-      'drizzle'
+      "drizzle"
     when 500..531
-      'rain'
+      "rain"
     when 600..622
-      'snow'
+      "snow"
     when 701..781
-      'atmosphere'
+      "atmosphere"
     when 800
-      'clear'
+      "clear"
     when 801..804
-      'clouds'
+      "clouds"
     else
-      'unknown'
+      "unknown"
     end
   end
 
   def severe_weather?
-    conditions.include?('thunderstorm') || 
-    conditions.include?('tornado') || 
-    conditions.include?('hurricane')
+    conditions.include?("thunderstorm") ||
+    conditions.include?("tornado") ||
+    conditions.include?("hurricane")
   end
 
   def precipitation?
-    conditions.include?('rain') || conditions.include?('snow')
+    conditions.include?("rain") || conditions.include?("snow")
   end
 
   def uv_index_category
-    return 'low' if uv_index.nil?
+    return "low" if uv_index.nil?
     case uv_index
     when 0..2
-      'low'
+      "low"
     when 3..5
-      'moderate'
+      "moderate"
     when 6..7
-      'high'
+      "high"
     when 8..10
-      'very high'
+      "very high"
     else
-      'extreme'
+      "extreme"
     end
   end
-end 
+end

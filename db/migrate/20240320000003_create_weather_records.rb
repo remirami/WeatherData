@@ -20,4 +20,4 @@ class CreateWeatherRecords < ActiveRecord::Migration[7.1]
       t.timestamps
     end
   end
-end 
+end

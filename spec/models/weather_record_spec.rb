@@ -259,4 +259,4 @@ RSpec.describe WeatherRecord, type: :model do
       expect(location.timezone.to_i).to eq(7200)
     end
   end
-end 
+end

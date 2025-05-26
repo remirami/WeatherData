@@ -20,4 +20,4 @@ class OpenWeatherService
       new(*args).fetch_weather
     end
   end
-end 
+end

@@ -20,7 +20,7 @@ class User < ApplicationRecord
 
   # Methods
   def favorite_locations
-    locations.order('user_locations.created_at DESC')
+    locations.order("user_locations.created_at DESC")
   end
 
   def add_location(location)
@@ -52,4 +52,4 @@ class User < ApplicationRecord
     user_locations.update_all(is_default: false)
     user_locations.find_or_create_by(location: location).update(is_default: true)
   end
-end 
+end

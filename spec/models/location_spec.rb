@@ -152,7 +152,7 @@ RSpec.describe Location, type: :model do
 
     describe "#coordinates" do
       it "returns latitude and longitude as an array" do
-        expect(location.coordinates).to eq([location.latitude, location.longitude])
+        expect(location.coordinates).to eq([ location.latitude, location.longitude ])
       end
     end
 
@@ -285,4 +285,4 @@ RSpec.describe Location, type: :model do
       end
     end
   end
-end 
+end

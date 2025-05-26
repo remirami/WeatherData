@@ -10,6 +10,6 @@ class CreateUserLocations < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :user_locations, [:user_id, :location_id], unique: true
+    add_index :user_locations, [ :user_id, :location_id ], unique: true
   end
-end 
+end

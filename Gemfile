@@ -16,7 +16,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
-gem 'dotenv-rails'
+gem "dotenv-rails"
 gem "httparty"
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "tailwindcss-rails", "~> 4.2.0"
@@ -58,7 +58,6 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
   # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-
 end
 gem "devise"
 

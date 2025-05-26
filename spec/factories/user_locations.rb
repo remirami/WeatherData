@@ -19,4 +19,4 @@ FactoryBot.define do
       notification_enabled { false }
     end
   end
-end 
+end

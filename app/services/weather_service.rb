@@ -1,11 +1,11 @@
-require 'httparty'
+require "httparty"
 
 class WeatherService
   include HTTParty
-  base_uri 'https://api.openweathermap.org/data/2.5'
+  base_uri "https://api.openweathermap.org/data/2.5"
 
   def initialize(city)
-    @api_key = ENV['OPENWEATHER_API_KEY']
+    @api_key = ENV["OPENWEATHER_API_KEY"]
     @city = city
   end
 
@@ -13,29 +13,29 @@ class WeatherService
     response = self.class.get("/weather", query: {
       q: @city,
       appid: @api_key,
-      units: 'metric'
+      units: "metric"
     })
 
     if response.success?
       {
-        temperature: response['main']['temp'],
-        feels_like: response['main']['feels_like'],
-        temp_min: response['main']['temp_min'],
-        temp_max: response['main']['temp_max'],
-        description: response['weather'][0]['description'],
-        humidity: response['main']['humidity'],
-        pressure: response['main']['pressure'],
-        wind_speed: response['wind']['speed'],
-        wind_direction: response['wind']['deg'],
-        city: response['name'],
-        country: response['sys']['country'],
-        sunrise: response['sys']['sunrise'],
-        sunset: response['sys']['sunset'],
-        icon: response['weather'][0]['icon'],
-        visibility: response['visibility'],
-        clouds: response['clouds']['all'],
-        rain: response['rain']&.fetch('1h', 0),
-        snow: response['snow']&.fetch('1h', 0)
+        temperature: response["main"]["temp"],
+        feels_like: response["main"]["feels_like"],
+        temp_min: response["main"]["temp_min"],
+        temp_max: response["main"]["temp_max"],
+        description: response["weather"][0]["description"],
+        humidity: response["main"]["humidity"],
+        pressure: response["main"]["pressure"],
+        wind_speed: response["wind"]["speed"],
+        wind_direction: response["wind"]["deg"],
+        city: response["name"],
+        country: response["sys"]["country"],
+        sunrise: response["sys"]["sunrise"],
+        sunset: response["sys"]["sunset"],
+        icon: response["weather"][0]["icon"],
+        visibility: response["visibility"],
+        clouds: response["clouds"]["all"],
+        rain: response["rain"]&.fetch("1h", 0),
+        snow: response["snow"]&.fetch("1h", 0)
       }
     else
       nil

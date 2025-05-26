@@ -34,4 +34,4 @@ class UserLocation < ApplicationRecord
       user.user_locations.where.not(id: id).update_all(is_default: false)
     end
   end
-end 
+end

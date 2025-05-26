@@ -6,13 +6,13 @@ class Location < ApplicationRecord
 
   # Validations
   validates :name, presence: true
-  validates :latitude, presence: true, numericality: { 
-    greater_than_or_equal_to: -90, 
-    less_than_or_equal_to: 90 
+  validates :latitude, presence: true, numericality: {
+    greater_than_or_equal_to: -90,
+    less_than_or_equal_to: 90
   }
-  validates :longitude, presence: true, numericality: { 
-    greater_than_or_equal_to: -180, 
-    less_than_or_equal_to: 180 
+  validates :longitude, presence: true, numericality: {
+    greater_than_or_equal_to: -180,
+    less_than_or_equal_to: 180
   }
   validates :city, presence: true
   validates :country, presence: true
@@ -27,16 +27,16 @@ class Location < ApplicationRecord
   # Class methods
   def self.find_or_create_from_openweather(data)
     location = find_or_initialize_by(
-      openweather_id: data['id'],
-      city: data['name'],
-      country: data['sys']['country']
+      openweather_id: data["id"],
+      city: data["name"],
+      country: data["sys"]["country"]
     )
 
     location.update!(
-      name: data['name'],
-      latitude: data['coord']['lat'],
-      longitude: data['coord']['lon'],
-      timezone: data['timezone'].to_i
+      name: data["name"],
+      latitude: data["coord"]["lat"],
+      longitude: data["coord"]["lon"],
+      timezone: data["timezone"].to_i
     )
 
     location
@@ -55,7 +55,7 @@ class Location < ApplicationRecord
   end
 
   def coordinates
-    [latitude, longitude]
+    [ latitude, longitude ]
   end
 
   def full_name
@@ -67,7 +67,7 @@ class Location < ApplicationRecord
 
     response = OpenWeatherAPI::Client.new.current_weather(
       id: openweather_id,
-      units: 'metric'
+      units: "metric"
     )
 
     WeatherRecord.from_openweather_data(response, self)
@@ -78,10 +78,10 @@ class Location < ApplicationRecord
 
     response = OpenWeatherAPI::Client.new.forecast(
       id: openweather_id,
-      units: 'metric'
+      units: "metric"
     )
 
-    response['list'].map do |data|
+    response["list"].map do |data|
       WeatherRecord.from_openweather_data(data, self)
     end
   end
@@ -94,7 +94,7 @@ class Location < ApplicationRecord
       lon: longitude
     )
 
-    response['list'].first['main']['aqi']
+    response["list"].first["main"]["aqi"]
   end
 
   def timezone
@@ -129,4 +129,4 @@ class Location < ApplicationRecord
   def timezone_offset
     timezone || 0
   end
-end 
+end

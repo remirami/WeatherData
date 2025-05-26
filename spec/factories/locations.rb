@@ -72,4 +72,4 @@ FactoryBot.define do
       openweather_id { nil }
     end
   end
-end 
+end

@@ -64,4 +64,4 @@ FactoryBot.define do
       uv_index { 11 }
     end
   end
-end 
+end

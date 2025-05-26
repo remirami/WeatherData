@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  root 'weather#index'
-  get 'weather', to: 'weather#index'
-  get 'weather/results', to: 'weather#results'
-  get 'styling-test', to: 'layouts#styling_test'
+  root "weather#index"
+  get "weather", to: "weather#index"
+  get "weather/results", to: "weather#results"
+  get "styling-test", to: "layouts#styling_test"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
