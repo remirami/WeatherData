@@ -17,9 +17,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
 
-      # Add this step to ensure gems are installed
       - name: Install Ruby dependencies
         run: bundle install
 
@@ -37,9 +36,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
 
-      # Add this step to ensure gems are installed
       - name: Install Ruby dependencies
         run: bundle install
 
@@ -56,9 +54,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
 
-      # Add this step to ensure gems are installed
       - name: Install Ruby dependencies
         run: bundle install
 
@@ -85,9 +82,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
-          bundler-cache: true
+          bundler-cache: false
 
-      # Add this step to ensure gems are installed
       - name: Install Ruby dependencies
         run: bundle install
 
