@@ -64,6 +64,28 @@
           </div>
         </div>
 
+        <div class="flex items-center space-x-2" data-controller="rain-filter">
+          <div class="relative">
+            <%= f.check_box :rain_expected, 
+                class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded",
+                data: { 
+                  action: "change->rain-filter#toggleIndicator",
+                  rain_filter_target: "checkbox"
+                } %>
+            <div data-rain-filter-target="indicator" 
+                 class="absolute -top-2 -right-2 hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          <%= f.label :rain_expected, "Will it rain?", class: "text-sm font-medium text-gray-700" %>
+          <span data-rain-filter-target="badge" 
+                class="hidden ml-2 px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+            Rain filter active
+          </span>
+        </div>
+
         <div>
           <%= button_tag "Get Weather", type: :submit, class: "w-full flex justify-center py-2 px-4 border rounded-md shadow-sm text-sm font-medium text-black bg-blue-200 hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" %>
         </div>

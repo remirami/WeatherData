@@ -3,6 +3,7 @@ class WeatherController < ApplicationController
     @city = params[:city]
     temperature = params[:temperature].to_f
     day_range = params[:day_range].to_i
+    rain_expected = params[:rain_expected] == "1"
 
     Rails.logger.debug "City param received: '#{@city}'"
 
@@ -27,6 +28,15 @@ class WeatherController < ApplicationController
       entries.reject { |entry| entry["temperature"].nil? } # Remove incomplete data
              .min_by { |entry| (entry["temperature"].to_f - temperature).abs }
     end.compact # Remove nil values
+
+    # Filter for rainy days if requested
+    if rain_expected
+      daily_forecast = daily_forecast.select { |day| day["rain"]&.> 0 }
+      if daily_forecast.empty?
+        flash[:alert] = "No rainy days found in the forecast."
+        redirect_to root_path and return
+      end
+    end
 
     @forecast = daily_forecast.sort_by { |day| (day["temperature"].to_f - temperature).abs }
                               .first(day_range)
