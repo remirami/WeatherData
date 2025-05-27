@@ -78,23 +78,15 @@ jobs:
       - name: Download ChromeDriver
         run: |
           CHROME_VERSION=$(google-chrome-stable --version | sed -e 's/^Google Chrome //')
-          CFT_JSON_URL="https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by-version.json"
-          echo "Fetching Chrome for Testing JSON from: ${CFT_JSON_URL}"
-          CFT_JSON=$(curl -s "${CFT_JSON_URL}")
-          echo "Chrome for Testing JSON response: ${CFT_JSON}"
-          CHROMEDRIVER_INFO=$(echo "${CFT_JSON}" | jq -r ".versions[] | select(.version == \"${CHROME_VERSION}\") | .downloads.chromedriver | .[] | select(.platform == \"linux64\")")
-          CHROMEDRIVER_VERSION=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".version")
-          CHROMEDRIVER_DOWNLOAD_URL=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".url")
-          
           echo "Detected Chrome version: ${CHROME_VERSION}"
-          echo "Latest stable ChromeDriver version from dashboard: ${CHROMEDRIVER_VERSION}"
+          
+          # Using known stable version from Chrome for Testing dashboard
+          CHROMEDRIVER_VERSION="136.0.7103.113"
+          CHROMEDRIVER_DOWNLOAD_URL="https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip"
+          
+          echo "Using ChromeDriver version: ${CHROMEDRIVER_VERSION}"
           echo "ChromeDriver download URL: ${CHROMEDRIVER_DOWNLOAD_URL}"
-
-          if [ -z "${CHROMEDRIVER_DOWNLOAD_URL}" ]; then
-            echo "Error: Could not find ChromeDriver download URL for Chrome version ${CHROME_VERSION} stable channel."
-            exit 1
-          fi
-
+          
           wget "${CHROMEDRIVER_DOWNLOAD_URL}" -O chromedriver.zip
           unzip chromedriver.zip
           sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
