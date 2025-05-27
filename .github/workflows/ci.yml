@@ -73,7 +73,15 @@ jobs:
     #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable libnss3 libglib2.0-0 libfontconfig1
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable libnss3 libglib2.0-0 libfontconfig1 unzip
+
+      - name: Download ChromeDriver
+        run: |
+          CHROMEDRIVER_VERSION="136.0.6864.90"
+          wget "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/136.0.6864.90/linux64/chromedriver-linux64.zip" -O chromedriver.zip
+          unzip chromedriver.zip
+          sudo mv chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -91,7 +99,6 @@ jobs:
         env:
           RAILS_ENV: test
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }} 
-          WD_CHROME_PATH: /usr/bin/google-chrome
           # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
 
