@@ -8,9 +8,9 @@ RSpec.describe "Weather search", type: :system do
   it "displays weather results after form submission", js: true do
     visit root_path
 
-    fill_in "City", with: "Oulu"
-    fill_in "Temperature (°C)", with: "5"
-    fill_in "Day Range (1-5)", with: "3"
+    fill_in "city", with: "Oulu"
+    fill_in "temperature", with: "5"
+    fill_in "day_range", with: "3"
     click_button "Get Weather"
 
     expect(page).to have_css("#weather_results")
