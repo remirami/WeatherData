@@ -101,10 +101,9 @@ RSpec.configure do |config|
   config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
   config.include Rails::Controller::Testing::Integration, type: :controller
 
-  # Configure Webdrivers for Chrome for Testing
+  # Set the required Chromedriver version for Webdrivers
   config.before(:each, type: :system) do
-    # Let Webdrivers auto-detect and download the correct ChromeDriver version
-    Webdrivers::Chromedriver.required_version = nil
+    Webdrivers::Chromedriver.required_version = '114.0.5735.90'
   end
 
   # Monkey patch to fix FrozenError with eager_load and autoload_paths

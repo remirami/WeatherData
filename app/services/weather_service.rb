@@ -38,7 +38,7 @@ class WeatherService
         snow: response["snow"]&.fetch("1h", 0)
       }
     else
-      nil
+      { error: "Failed to fetch weather data: #{response.code} - #{response.body}" }
     end
   end
 
@@ -52,7 +52,9 @@ class WeatherService
 
       Rails.logger.debug "API Full Response: #{response.body}"
 
-      return { error: "Failed to fetch weather data: #{response.code} - #{response.body}" } unless response.success?
+      unless response.success?
+        return { error: "Failed to fetch weather data: #{response.code} - #{response.body}" }
+      end
 
       parsed_data = parse_weather_data(response.parsed_response)
       Rails.logger.debug "Parsed Forecast Data: #{parsed_data.inspect}"
