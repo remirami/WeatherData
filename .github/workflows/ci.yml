@@ -73,14 +73,21 @@ jobs:
     #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable libnss3 libglib2.0-0 libfontconfig1 unzip
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git pkg-config google-chrome-stable libnss3 libglib2.0-0 libfontconfig1 unzip jq
 
       - name: Download ChromeDriver
         run: |
-          CHROMEDRIVER_VERSION="136.0.6864.90"
-          wget "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/136.0.6864.90/linux64/chromedriver-linux64.zip" -O chromedriver.zip
+          CHROME_VERSION=$(google-chrome-stable --version | sed -e 's/^Google Chrome //')
+          CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by- বাস্তবতা.json" | jq -r ".channels.Stable.version")
+          CHROMEDRIVER_DOWNLOAD_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by- বাস্তবতা.json" | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform == \"linux64\").url")
+          
+          echo "Detected Chrome version: ${CHROME_VERSION}"
+          echo "Latest stable ChromeDriver version: ${CHROMEDRIVER_URL}"
+          echo "ChromeDriver download URL: ${CHROMEDRIVER_DOWNLOAD_URL}"
+
+          wget "${CHROMEDRIVER_DOWNLOAD_URL}" -O chromedriver.zip
           unzip chromedriver.zip
-          sudo mv chromedriver /usr/local/bin/
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Checkout code
