@@ -13,6 +13,7 @@ RSpec.describe WeatherService do
       before do
         mock_response = double("HTTP Response",
           success?: true,
+          code: 200,
           parsed_response: {
             "list" => [
               {
@@ -73,6 +74,7 @@ RSpec.describe WeatherService do
       before do
         mock_invalid_response = double("HTTP Response",
           success?: true,
+          code: 200,
           parsed_response: { "not_list" => [] }
         )
         allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_invalid_response)
