@@ -24,7 +24,11 @@ require 'factory_bot_rails'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-# Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
+# Dir[Rails.root.join('spec', '**', '*.rb')].each { |f| require f }
+
+# Requires supporting ruby files with custom matchers and macros, etc, in
+# spec/support/
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -62,13 +66,66 @@ RSpec.configure do |config|
   # behaviour is considered legacy and will be removed in a future version.
   #
   # To enable this behaviour uncomment the line below.
-  # config.infer_spec_type_from_file_location!
+  config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
-  # Include FactoryBot methods
+  # Use the newer `:controller` syntax for controller specs
+  config.before(:each, type: :controller) do
+    @routes = Rails.application.routes
+  end
+
+  # Include FactoryBot syntax
   config.include FactoryBot::Syntax::Methods
+
+  # Include Devise test helpers for controller specs
+  config.include Devise::Test::ControllerHelpers, type: :controller
+
+  # Include Devise test helpers for request specs
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
+  # For System Specs using Devise
+  config.include Warden::Test::Helpers, type: :system
+
+  # Include the rails-controller-testing helpers
+  config.include Rails::Controller::Testing::TestProcess, type: :controller
+  config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
+  config.include Rails::Controller::Testing::Integration, type: :controller
 end
+
+# Explicitly require rails-controller-testing for the assigns method
+require 'rails/controller/testing/assigns'
+
+# Monkey patch to fix FrozenError with eager_load and autoload_paths
+# This should only be needed if you are modifying load paths directly in initializers
+# or if there's a gem conflict.
+# If the FrozenError persists, this monkey patch might indicate a deeper configuration issue
+# that needs to be addressed by fixing the underlying cause.
+# Rails.configuration.autoload_paths = Rails.configuration.autoload_paths.dup.freeze unless Rails.env.test?
+# Rails.configuration.eager_load_paths = Rails.configuration.eager_load_paths.dup.freeze unless Rails.env.test?
+
+# Monkey patch for ArgumentError with enum in Rails 8.0.1
+# This is a known issue in Rails 8.0.1 that affects how enums are initialized
+# during test environment loading when eager_load is enabled.
+# This monkey patch provides a workaround by ensuring the enum is initialized correctly.
+# Remove this patch when upgrading to a Rails version that fixes this issue.
+#
+# To identify if this patch is still needed, check the Rails changelog for fixes
+# related to enum loading with eager_load in the test environment.
+#
+# unless defined?(Rails::VERSION::STRING) && Rails::VERSION::STRING >= '8.0.2'
+#   module ActiveRecord
+#     module Enum
+#       class Map
+#         def initialize(enum_method_name, values, model)
+#           @enum_method_name = enum_method_name
+#           @values = values
+#           @model = model
+#         end
+#       end
+#     end
+#   end
+# end

@@ -87,6 +87,14 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
+      - name: Update Webdrivers
+        run: |-
+          bundle exec rails about
+          bundle exec rails test:system
+          bundle exec rails db:test:prepare
+          bundle exec rspec --dry-run # or any command that loads webdrivers
+          bundle exec webdrivers chrome --update
+
       - name: Run Rspec tests
         env:
           RAILS_ENV: test
