@@ -19,7 +19,7 @@ gem "jbuilder"
 gem "dotenv-rails"
 gem "httparty"
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails", "~> 4.2.0"
+gem "tailwindcss-rails", "~> 4.2.3"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
