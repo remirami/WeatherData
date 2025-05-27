@@ -103,9 +103,8 @@ RSpec.configure do |config|
 
   # Configure Webdrivers for Chrome for Testing
   config.before(:each, type: :system) do
-    # Use Chrome for Testing API
-    Webdrivers::Chromedriver.update = true
-    Webdrivers::Chromedriver.required_version = nil  # Let it auto-detect
+    # Let Webdrivers auto-detect and download the correct ChromeDriver version
+    Webdrivers::Chromedriver.required_version = nil
   end
 
   # Monkey patch to fix FrozenError with eager_load and autoload_paths

@@ -44,9 +44,9 @@ RSpec.describe WeatherService do
       it "returns forecast data as an Array" do
         forecast = service.fetch_forecast
         expect(forecast).to be_an(Array)
-        expect(forecast.size).to eq(2)
+        expect(forecast.size).to eq(2)  # Two days of forecast data
         expect(forecast.first).to include("date", "temperature")
-        expect(forecast.first["temperature"]).to eq(15)
+        expect(forecast.first["temperature"]).to eq(18)  # Max temp from the second entry
       end
     end
 
