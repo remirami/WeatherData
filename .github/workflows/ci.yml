@@ -79,7 +79,10 @@ jobs:
         run: |
           CHROME_VERSION=$(google-chrome-stable --version | sed -e 's/^Google Chrome //')
           CFT_JSON_URL="https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by-version.json"
-          CHROMEDRIVER_INFO=$(curl -s "${CFT_JSON_URL}" | jq -r ".channels.Stable.downloads.chromedriver | .[] | select(.platform == \"linux64\")")
+          echo "Fetching Chrome for Testing JSON from: ${CFT_JSON_URL}"
+          CFT_JSON=$(curl -s "${CFT_JSON_URL}")
+          echo "Chrome for Testing JSON response: ${CFT_JSON}"
+          CHROMEDRIVER_INFO=$(echo "${CFT_JSON}" | jq -r ".versions[] | select(.version == \"${CHROME_VERSION}\") | .downloads.chromedriver | .[] | select(.platform == \"linux64\")")
           CHROMEDRIVER_VERSION=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".version")
           CHROMEDRIVER_DOWNLOAD_URL=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".url")
           
