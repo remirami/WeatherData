@@ -90,7 +90,7 @@ jobs:
       - name: Run Rspec tests
         env:
           RAILS_ENV: test
-          # Add the environment variable for Chrome binary location
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }} 
           WD_CHROME_PATH: /usr/bin/google-chrome
           # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
