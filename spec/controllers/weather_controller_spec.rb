@@ -43,7 +43,7 @@ RSpec.describe WeatherController, type: :controller do
       expect(flash[:alert]).to match(/Please enter a valid city/)
     end
     it "redirects with an alert if the API request fails" do
-      allow(OpenWeatherService).to receive(:fetch_weather).and_return(nil)
+      allow(OpenWeatherService).to receive(:fetch_weather).and_return({ error: "API Error" })
 
       post :results, params: { city: "InvalidCity", temperature: 20, day_range: 3 }
 
