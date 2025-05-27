@@ -87,6 +87,13 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
+      - name: Get webdrivers gem path
+        id: get-webdrivers-path
+        run: echo "WEBDRIVERS_PATH=$(bundle show --paths webdrivers)" >> $GITHUB_ENV
+
+      - name: List webdrivers gem exe directory
+        run: ls -l ${{ env.WEBDRIVERS_PATH }}/exe
+
       - name: Add bundle bin to PATH
         run: echo "$BUNDLE_BIN" >> $GITHUB_PATH
         env:
@@ -94,8 +101,7 @@ jobs:
 
       - name: Update Webdrivers
         run: |
-          WEBDRIVERS_PATH=$(bundle show --paths webdrivers)
-          $WEBDRIVERS_PATH/exe/webdrivers chrome --update
+          ${{ env.WEBDRIVERS_PATH }}/exe/webdrivers chrome --update
 
       - name: Run Rspec tests
         env:
