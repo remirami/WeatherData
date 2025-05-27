@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
@@ -98,6 +100,42 @@ RSpec.configure do |config|
   config.include Rails::Controller::Testing::TestProcess, type: :controller
   config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
   config.include Rails::Controller::Testing::Integration, type: :controller
+
+  # Set the required Chromedriver version for Webdrivers
+  config.before(:each, type: :system) do
+    Webdrivers::Chromedriver.required_version = '124.0.6367.91'
+  end
+
+  # Monkey patch to fix FrozenError with eager_load and autoload_paths
+  # This should only be needed if you are modifying load paths directly in initializers
+  # or if there's a gem conflict.
+  # If the FrozenError persists, this monkey patch might indicate a deeper configuration issue
+  # that needs to be addressed by fixing the underlying cause.
+  # Rails.configuration.autoload_paths = Rails.configuration.autoload_paths.dup.freeze unless Rails.env.test?
+  # Rails.configuration.eager_load_paths = Rails.configuration.eager_load_paths.dup.freeze unless Rails.env.test?
+
+  # Monkey patch for ArgumentError with enum in Rails 8.0.1
+  # This is a known issue in Rails 8.0.1 that affects how enums are initialized
+  # during test environment loading when eager_load is enabled.
+  # This monkey patch provides a workaround by ensuring the enum is initialized correctly.
+  # Remove this patch when upgrading to a Rails version that fixes this issue.
+  #
+  # To identify if this patch is still needed, check the Rails changelog for fixes
+  # related to enum loading with eager_load in the test environment.
+  #
+  # unless defined?(Rails::VERSION::STRING) && Rails::VERSION::STRING >= '8.0.2'
+  #   module ActiveRecord
+  #     module Enum
+  #       class Map
+  #         def initialize(enum_method_name, values, model)
+  #           @enum_method_name = enum_method_name
+  #           @values = values
+  #           @model = model
+  #         end
+  #       end
+  #     end
+  #   end
+  # end
 end
 
 # Explicitly require rails-controller-testing for the assigns method
