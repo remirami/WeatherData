@@ -87,25 +87,11 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
-      - name: Get webdrivers gem path
-        id: get-webdrivers-path
-        run: echo "WEBDRIVERS_PATH=$(bundle show --paths webdrivers)" >> $GITHUB_ENV
-
-      - name: List webdrivers gem directory contents
-        run: ls -la ${{ env.WEBDRIVERS_PATH }}
-
-      - name: Add bundle bin to PATH
-        run: echo "$BUNDLE_BIN" >> $GITHUB_PATH
-        env:
-          BUNDLE_BIN: ${{ steps.bundle-install.outputs.BUNDLE_BIN }}
-
-      - name: Update Webdrivers
-        run: |
-          ${{ env.WEBDRIVERS_PATH }}/exe/webdrivers chrome --update
-
       - name: Run Rspec tests
         env:
           RAILS_ENV: test
+          # Add the environment variable for Chrome binary location
+          WD_CHROME_PATH: /usr/bin/google-chrome
           # REDIS_URL: redis://localhost:6379/0
         run: bundle exec rspec
 
