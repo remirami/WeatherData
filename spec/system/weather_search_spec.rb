@@ -9,9 +9,9 @@ RSpec.describe "Weather search", type: :system do
     visit root_path
 
     fill_in "City", with: "Oulu"
-    fill_in "Desired Temperature:", with: "5"
-    fill_in "Number of Days (1-10):", with: "3"
-    click_button "Search"
+    fill_in "Temperature (°C)", with: "5"
+    fill_in "Day Range (1-5)", with: "3"
+    click_button "Get Weather"
 
     expect(page).to have_css("#weather_results")
     expect(page).to have_content("Weather Forecast")
