@@ -104,6 +104,11 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
+      - name: Install and build JS dependencies
+        run: |-
+          yarn install --frozen-lockfile
+          yarn build:css
+
       - name: Prepare test database
         run: bundle exec rails db:test:prepare
 
