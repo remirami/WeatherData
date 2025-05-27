@@ -5,6 +5,10 @@ RSpec.describe WeatherService do
     let(:city) { "Oulu" }
     subject(:service) { described_class.new(city) }
 
+    before do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+    end
+
     context "when the API call is successful" do
       before do
         mock_response = double("HTTP Response",
@@ -33,6 +37,7 @@ RSpec.describe WeatherService do
           }
         )
         allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_response)
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
       end
 
       it "returns forecast data as an Array" do
@@ -53,6 +58,7 @@ RSpec.describe WeatherService do
         )
         allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_error_response)
         allow(mock_error_response).to receive(:parsed_response).and_return(JSON.parse(mock_error_response.body))
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
       end
 
       it "handles API errors gracefully" do
@@ -70,6 +76,7 @@ RSpec.describe WeatherService do
           parsed_response: { "not_list" => [] }
         )
         allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_invalid_response)
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
       end
 
       it "returns an error for invalid data" do
