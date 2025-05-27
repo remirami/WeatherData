@@ -65,10 +65,14 @@ class WeatherService
   private
 
   def parse_weather_data(data)
+    Rails.logger.debug "parse_weather_data received data: #{data.inspect}"
     return { error: "Invalid data format" } unless data["list"]
+    Rails.logger.debug "parse_weather_data data[list]: #{data["list"].inspect}"
 
-    data["list"].group_by { |entry| Time.at(entry["dt"]).strftime("%Y-%m-%d") }
-                .map do |date, entries|
+    grouped_data = data["list"].group_by { |entry| Time.at(entry["dt"]).strftime("%Y-%m-%d") }
+    Rails.logger.debug "parse_weather_data grouped_data: #{grouped_data.inspect}"
+
+    grouped_data.map do |date, entries|
       {
         "date" => date,
         "temperature" => safe_max(entries, "main", "temp"),

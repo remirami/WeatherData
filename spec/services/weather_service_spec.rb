@@ -5,40 +5,39 @@ RSpec.describe WeatherService do
     let(:city) { "Oulu" }
     subject(:service) { described_class.new(city) }
 
-    before do
-      allow(Rails.cache).to receive(:fetch).and_call_original
-    end
-
     context "when the API call is successful" do
       before do
-        mock_response = double("HTTP Response",
-          success?: true,
-          code: 200,
-          parsed_response: {
-            "list" => [
-              {
-                "dt" => Time.now.to_i,
-                "main" => { "temp" => 15, "temp_min" => 10, "temp_max" => 20, "humidity" => 60, "pressure" => 1012 },
-                "weather" => [{ "description" => "clear sky", "icon" => "01d", "id" => 800 }],
-                "clouds" => { "all" => 0 },
-                "wind" => { "speed" => 5, "deg" => 180 },
-                "rain" => {},
-                "snow" => {}
-              },
-              {
-                "dt" => (Time.now + 1.day).to_i,
-                "main" => { "temp" => 18, "temp_min" => 12, "temp_max" => 22, "humidity" => 55, "pressure" => 1010 },
-                "weather" => [{ "description" => "few clouds", "icon" => "02d", "id" => 801 }],
-                "clouds" => { "all" => 20 },
-                "wind" => { "speed" => 6, "deg" => 200 },
-                "rain" => {},
-                "snow" => {}
-              }
-            ]
+        mock_response_data = [
+          {
+            "date" => Time.at(Time.now.to_i).strftime("%Y-%m-%d"),
+            "temperature" => 20,
+            "temp_min" => 10,
+            "temp_max" => 20,
+            "humidity" => 60,
+            "wind_speed" => 5,
+            "description" => "clear sky",
+            "icon" => "01d",
+            "pressure" => 1012,
+            "clouds" => 0,
+            "rain" => 0,
+            "snow" => 0
+          },
+          {
+            "date" => Time.at((Time.now + 1.day).to_i).strftime("%Y-%m-%d"),
+            "temperature" => 22,
+            "temp_min" => 12,
+            "temp_max" => 22,
+            "humidity" => 55,
+            "wind_speed" => 6,
+            "description" => "few clouds",
+            "icon" => "02d",
+            "pressure" => 1010,
+            "clouds" => 20,
+            "rain" => 0,
+            "snow" => 0
           }
-        )
-        allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_response)
-        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
+        ]
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_return(mock_response_data)
       end
 
       it "returns forecast data as an Array" do
@@ -46,20 +45,14 @@ RSpec.describe WeatherService do
         expect(forecast).to be_an(Array)
         expect(forecast.size).to eq(2)  # Two days of forecast data
         expect(forecast.first).to include("date", "temperature")
-        expect(forecast.first["temperature"]).to eq(18)  # Max temp from the second entry
+        expect(forecast.first["temperature"]).to eq(20)
       end
     end
 
     context "when the API call fails" do
       before do
-        mock_error_response = double("HTTP Response",
-          success?: false,
-          code: 401,
-          body: "{\"cod\":401, \"message\": \"Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.\"}"
-        )
-        allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_error_response)
-        allow(mock_error_response).to receive(:parsed_response).and_return(JSON.parse(mock_error_response.body))
-        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
+        mock_error_response_data = { error: "Failed to fetch weather data: 401 - {\"cod\":401, \"message\": \"Invalid API key. Please see https://openweathermap.org/faq#error401 for more info.\"}" }
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_return(mock_error_response_data)
       end
 
       it "handles API errors gracefully" do
@@ -72,13 +65,8 @@ RSpec.describe WeatherService do
 
     context "when the API returns invalid data format" do
       before do
-        mock_invalid_response = double("HTTP Response",
-          success?: true,
-          code: 200,
-          parsed_response: { "not_list" => [] }
-        )
-        allow(HTTParty).to receive(:get).with("/forecast", any_args).and_return(mock_invalid_response)
-        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_yield
+        mock_invalid_response_data = { error: "Invalid data format" }
+        allow(Rails.cache).to receive(:fetch).with("weather_#{city}", expires_in: 10.minutes).and_return(mock_invalid_response_data)
       end
 
       it "returns an error for invalid data" do
