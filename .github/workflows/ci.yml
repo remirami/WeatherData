@@ -104,17 +104,19 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
-      - name: Run Rspec tests
+      - name: Run RSpec tests
+        run: bundle exec rspec
         env:
           RAILS_ENV: test
-          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }} 
-          # REDIS_URL: redis://localhost:6379/0
-        run: bundle exec rspec
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
 
-      - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
+          path: /home/runner/work/WeatherData/WeatherData/tmp/capybara
           if-no-files-found: ignore
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false

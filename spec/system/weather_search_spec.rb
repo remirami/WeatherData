@@ -7,6 +7,16 @@ RSpec.describe "Weather search", type: :system do
 
   it "displays weather results after form submission", js: true do
     visit root_path
+    
+    # Debug: Print the page content
+    puts "Page content:"
+    puts page.html
+    
+    # Debug: List all form fields
+    puts "\nForm fields:"
+    page.all('input').each do |input|
+      puts "Field: #{input[:name]} (#{input[:type]})"
+    end
 
     fill_in "city", with: "Oulu"
     fill_in "temperature", with: "5"
