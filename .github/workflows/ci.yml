@@ -105,10 +105,27 @@ jobs:
         run: bundle install
 
       - name: Run RSpec tests
-        run: bundle exec rspec
+        run: |-
+          bundle exec rspec 2> test.log
+          if [ -f test.log ] && [ -s test.log ]; then
+            echo "Test logs found, uploading..."
+          else
+            echo "No test logs generated."
+          fi
         env:
           RAILS_ENV: test
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: test.log
+          if-no-files-found: ignore
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
 
       - name: Upload screenshots
         if: failure()
