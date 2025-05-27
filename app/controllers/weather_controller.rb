@@ -1,4 +1,8 @@
 class WeatherController < ApplicationController
+  def index
+    # This action is for rendering the initial form
+  end
+
   def results
     @city = params[:city]
     temperature = params[:temperature].to_f

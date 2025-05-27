@@ -5,6 +5,12 @@ RSpec.describe "Weather search", type: :system do
     driven_by :selenium, using: :headless_chrome
   end
 
+  # Test to debug 500 error on root path
+  it "responds with success on root path" do
+    visit root_path
+    expect(page.status_code).to eq(200), "Expected status code 200, but got #{page.status_code}. Page content: #{page.html}"
+  end
+
   it "displays weather results after form submission", js: true do
     visit root_path
     
@@ -14,8 +20,8 @@ RSpec.describe "Weather search", type: :system do
     
     # Debug: List all form fields
     puts "\nForm fields:"
-    page.all('input').each do |input|
-      puts "Field: #{input[:name]} (#{input[:type]})"
+    page.all('input, select, textarea').each do |field|
+      puts "Field: #{field[:id] || field[:name]} (Type: #{field[:type] || field.tag_name}) Disabled: #{field.disabled?}"
     end
 
     fill_in "city", with: "Oulu"
