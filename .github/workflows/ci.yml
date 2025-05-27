@@ -78,12 +78,19 @@ jobs:
       - name: Download ChromeDriver
         run: |
           CHROME_VERSION=$(google-chrome-stable --version | sed -e 's/^Google Chrome //')
-          CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by- বাস্তবতা.json" | jq -r ".channels.Stable.version")
-          CHROMEDRIVER_DOWNLOAD_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by- বাস্তবতা.json" | jq -r ".channels.Stable.downloads.chromedriver[] | select(.platform == \"linux64\").url")
+          CFT_JSON_URL="https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-by-version.json"
+          CHROMEDRIVER_INFO=$(curl -s "${CFT_JSON_URL}" | jq -r ".channels.Stable.downloads.chromedriver | .[] | select(.platform == \"linux64\")")
+          CHROMEDRIVER_VERSION=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".version")
+          CHROMEDRIVER_DOWNLOAD_URL=$(echo "${CHROMEDRIVER_INFO}" | jq -r ".url")
           
           echo "Detected Chrome version: ${CHROME_VERSION}"
-          echo "Latest stable ChromeDriver version: ${CHROMEDRIVER_URL}"
+          echo "Latest stable ChromeDriver version from dashboard: ${CHROMEDRIVER_VERSION}"
           echo "ChromeDriver download URL: ${CHROMEDRIVER_DOWNLOAD_URL}"
+
+          if [ -z "${CHROMEDRIVER_DOWNLOAD_URL}" ]; then
+            echo "Error: Could not find ChromeDriver download URL for Chrome version ${CHROME_VERSION} stable channel."
+            exit 1
+          fi
 
           wget "${CHROMEDRIVER_DOWNLOAD_URL}" -O chromedriver.zip
           unzip chromedriver.zip
