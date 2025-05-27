@@ -87,13 +87,14 @@ jobs:
       - name: Install Ruby dependencies
         run: bundle install
 
+      - name: Add bundle bin to PATH
+        run: echo "$BUNDLE_BIN" >> $GITHUB_PATH
+        env:
+          BUNDLE_BIN: ${{ steps.bundle-install.outputs.BUNDLE_BIN }}
+
       - name: Update Webdrivers
-        run: |-
-          bundle exec rails about
-          bundle exec rails test:system
-          bundle exec rails db:test:prepare
-          bundle exec rspec --dry-run # or any command that loads webdrivers
-          bundle exec webdrivers chrome --update
+        id: update-webdrivers
+        run: bundle exec webdrivers chrome --update
 
       - name: Run Rspec tests
         env:
