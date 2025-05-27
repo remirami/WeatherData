@@ -101,7 +101,7 @@ RSpec.configure do |config|
 end
 
 # Explicitly require rails-controller-testing for the assigns method
-require 'rails/controller/testing/assigns'
+# require 'rails/controller/testing/assigns' # Commenting this out
 
 # Monkey patch to fix FrozenError with eager_load and autoload_paths
 # This should only be needed if you are modifying load paths directly in initializers
