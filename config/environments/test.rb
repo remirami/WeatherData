@@ -19,11 +19,11 @@ Rails.application.configure do
   #config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
 
   # Show full error reports.
-  #config.consider_all_requests_local = true
+  config.consider_all_requests_local = true
   #config.cache_store = :null_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
-  #config.action_dispatch.show_exceptions = :rescuable
+  config.action_dispatch.show_exceptions = :all
 
   # Disable request forgery protection in test environment.
   #config.action_controller.allow_forgery_protection = false
