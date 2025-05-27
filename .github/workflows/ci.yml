@@ -91,8 +91,8 @@ jobs:
         id: get-webdrivers-path
         run: echo "WEBDRIVERS_PATH=$(bundle show --paths webdrivers)" >> $GITHUB_ENV
 
-      - name: List webdrivers gem exe directory
-        run: ls -l ${{ env.WEBDRIVERS_PATH }}/exe
+      - name: List webdrivers gem directory contents
+        run: ls -la ${{ env.WEBDRIVERS_PATH }}
 
       - name: Add bundle bin to PATH
         run: echo "$BUNDLE_BIN" >> $GITHUB_PATH
