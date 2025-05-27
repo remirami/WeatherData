@@ -103,7 +103,7 @@ RSpec.configure do |config|
 
   # Set the required Chromedriver version for Webdrivers
   config.before(:each, type: :system) do
-    Webdrivers::Chromedriver.required_version = '124.0.6367.91'
+    Webdrivers::Chromedriver.required_version = '123.0.6312.122'
   end
 
   # Monkey patch to fix FrozenError with eager_load and autoload_paths
