@@ -103,8 +103,8 @@ RSpec.configure do |config|
 
   # Configure Webdrivers for Chrome for Testing
   config.before(:each, type: :system) do
-    # Use the manually downloaded ChromeDriver version
-    Webdrivers::Chromedriver.required_version = "136.0.7103.113"
+    # Use our manually downloaded ChromeDriver
+    Selenium::WebDriver::Chrome::Service.driver_path = "/usr/local/bin/chromedriver"
   end
 
   # Monkey patch to fix FrozenError with eager_load and autoload_paths
