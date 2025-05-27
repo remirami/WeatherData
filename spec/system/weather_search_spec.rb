@@ -14,6 +14,9 @@ RSpec.describe "Weather search", type: :system do
   it "displays weather results after form submission", js: true do
     visit root_path
     
+    # Add a small delay to ensure page is ready
+    sleep 1
+    
     # Debug: Print the page content
     puts "Page content:"
     puts page.html
