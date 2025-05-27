@@ -93,8 +93,9 @@ jobs:
           BUNDLE_BIN: ${{ steps.bundle-install.outputs.BUNDLE_BIN }}
 
       - name: Update Webdrivers
-        id: update-webdrivers
-        run: bundle exec webdrivers chrome --update
+        run: |
+          WEBDRIVERS_PATH=$(bundle show --paths webdrivers)
+          $WEBDRIVERS_PATH/exe/webdrivers chrome --update
 
       - name: Run Rspec tests
         env:
