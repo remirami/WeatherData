@@ -5,12 +5,6 @@ RSpec.describe "Weather search", type: :system do
     driven_by :selenium, using: :headless_chrome
   end
 
-  # Test to debug 500 error on root path
-  it "responds with success on root path" do
-    visit root_path
-    expect(page.status_code).to eq(200), "Expected status code 200, but got #{page.status_code}. Page content: #{page.html}"
-  end
-
   it "loads the root path successfully" do
     visit root_path
     expect(page).to have_content("Weather Forecast")
