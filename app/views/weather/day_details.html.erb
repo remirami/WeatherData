@@ -1,0 +1,223 @@
+<% content_for :title do %>
+  <%= @city %> Weather Details for <%= Date.parse(@date).strftime("%A, %B %d") %>
+<% end %>
+
+<%# Add Inter font from Google Fonts %>
+<link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">
+        <%= @city %> - <%= Date.parse(@date).strftime("%A, %B %d") %>
+      </h1>
+      <%= link_to "Back to Forecast", weather_results_path(params.permit(:city, :temperature, :day_range, :rain_expected)), class: "text-blue-600 hover:text-blue-800" %>
+    </div>
+
+    <div class="mb-4 flex flex-wrap gap-4 items-center">
+      <label>
+        <input type="checkbox" id="toggleTemp" checked>
+        Show Temperature
+      </label>
+      <label>
+        <input type="checkbox" id="toggleRain" checked>
+        Show Rain
+      </label>
+      <label>
+        Chart Type:
+        <select id="chartType">
+          <option value="combo">Line + Bar</option>
+          <option value="line">Line Only</option>
+          <option value="bar">Bar Only</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="mb-8">
+      <canvas id="weatherChart" class="w-full h-96"></canvas>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @hourly_data.each do |hour| %>
+        <div class="bg-gray-50 rounded-lg p-4 shadow">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-lg font-semibold"><%= hour[:time] %></h3>
+            <img src="https://openweathermap.org/img/wn/<%= hour[:icon] %>.png" alt="Weather icon" class="w-10 h-10">
+          </div>
+          <div class="space-y-2">
+            <p class="text-2xl font-bold"><%= hour[:temperature] %>°C</p>
+            <p class="text-gray-600">Feels like: <%= hour[:feels_like] %>°C</p>
+            <p class="text-gray-600">Humidity: <%= hour[:humidity] %>%</p>
+            <p class="text-gray-600">Wind: <%= hour[:wind_speed] %> m/s</p>
+            <% if hour[:rain] > 0 %>
+              <p class="text-blue-600">Rain: <%= hour[:rain] %> mm</p>
+            <% end %>
+            <% if hour[:snow] > 0 %>
+              <p class="text-blue-400">Snow: <%= hour[:snow] %> mm</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx = document.getElementById('weatherChart').getContext('2d');
+
+  const tempData = <%= raw @hourly_data.map { |h| h[:temperature] }.to_json %>;
+  const rainData = <%= raw @hourly_data.map { |h| h[:rain] }.to_json %>;
+  const labels = <%= raw @hourly_data.map { |h| h[:time] }.to_json %>;
+
+  const datasets = [
+    {
+      label: 'Temperature (°C)',
+      data: tempData,
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      yAxisID: 'y',
+      type: 'line',
+      hidden: false
+    },
+    {
+      label: 'Rain (mm)',
+      data: rainData,
+      borderColor: 'rgb(54, 162, 235)',
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      yAxisID: 'y1',
+      type: 'bar',
+      hidden: false
+    }
+  ];
+
+  let chartType = 'combo';
+
+  function getDatasets() {
+    const showTemp = document.getElementById('toggleTemp').checked;
+    const showRain = document.getElementById('toggleRain').checked;
+    let type = chartType === 'combo' ? ['line', 'bar'] : [chartType, chartType];
+
+    return [
+      {
+        ...datasets[0],
+        hidden: !showTemp,
+        type: type[0]
+      },
+      {
+        ...datasets[1],
+        hidden: !showRain,
+        type: type[1]
+      }
+    ];
+  }
+
+  const config = {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: getDatasets()
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              family: "'Inter', 'Arial', sans-serif",
+              size: 16,
+              weight: 'bold'
+            },
+            color: '#1e293b'
+          }
+        },
+        title: {
+          display: true,
+          text: 'Hourly Weather',
+          font: {
+            family: "'Inter', 'Arial', sans-serif",
+            size: 20,
+            weight: 'bold'
+          },
+          color: '#0ea5e9'
+        },
+        tooltip: {
+          bodyFont: {
+            family: "'Inter', 'Arial', sans-serif",
+            size: 14
+          }
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      stacked: false,
+      scales: {
+        x: {
+          ticks: {
+            font: {
+              family: "'Inter', 'Arial', sans-serif",
+              size: 14
+            },
+            color: '#334155'
+          }
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Temperature (°C)'
+          },
+          ticks: {
+            font: {
+              family: "'Inter', 'Arial', sans-serif",
+              size: 14
+            },
+            color: '#334155'
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Rain (mm)'
+          },
+          grid: {
+            drawOnChartArea: false
+          },
+          ticks: {
+            font: {
+              family: "'Inter', 'Arial', sans-serif",
+              size: 14
+            },
+            color: '#334155'
+          }
+        }
+      }
+    }
+  };
+
+  const chart = new Chart(ctx, config);
+
+  // Event listeners for controls
+  document.getElementById('toggleTemp').addEventListener('change', function() {
+    chart.data.datasets = getDatasets();
+    chart.update();
+  });
+  document.getElementById('toggleRain').addEventListener('change', function() {
+    chart.data.datasets = getDatasets();
+    chart.update();
+  });
+  document.getElementById('chartType').addEventListener('change', function(e) {
+    chartType = e.target.value;
+    chart.data.datasets = getDatasets();
+    chart.update();
+  });
+});
+</script> 

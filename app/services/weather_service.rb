@@ -62,7 +62,46 @@ class WeatherService
     end
   end
 
+  def fetch_hourly_forecast(date)
+    Rails.cache.fetch("hourly_weather_#{@city}_#{date}", expires_in: 10.minutes) do
+      response = self.class.get("/forecast", query: {
+        q: @city,
+        units: "metric",
+        appid: @api_key
+      })
+
+      unless response.success?
+        return { error: "Failed to fetch weather data: #{response.code} - #{response.body}" }
+      end
+
+      parse_hourly_data(response.parsed_response, date)
+    end
+  end
+
   private
+
+  def parse_hourly_data(data, target_date)
+    return { error: "Invalid data format" } unless data["list"]
+
+    hourly_data = data["list"].select do |entry|
+      entry_date = Time.at(entry["dt"]).strftime("%Y-%m-%d")
+      entry_date == target_date
+    end
+
+    hourly_data.map do |entry|
+      {
+        time: Time.at(entry["dt"]).strftime("%H:%M"),
+        temperature: entry.dig("main", "temp"),
+        feels_like: entry.dig("main", "feels_like"),
+        humidity: entry.dig("main", "humidity"),
+        description: entry.dig("weather", 0, "description"),
+        icon: entry.dig("weather", 0, "icon"),
+        wind_speed: entry.dig("wind", "speed"),
+        rain: entry.dig("rain", "3h") || 0,
+        snow: entry.dig("snow", "3h") || 0
+      }
+    end
+  end
 
   def parse_weather_data(data)
     Rails.logger.debug "parse_weather_data received data: #{data.inspect}"

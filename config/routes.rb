@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root "weather#index"
   get "weather", to: "weather#index"
   get "weather/results", to: "weather#results"
+  get "weather/day/:date", to: "weather#day_details", as: :weather_day
   get "styling-test", to: "layouts#styling_test"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

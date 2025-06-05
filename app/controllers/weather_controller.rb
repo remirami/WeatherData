@@ -58,4 +58,17 @@ class WeatherController < ApplicationController
       format.html { render :results }
     end
   end
+
+  def day_details
+    @city = params[:city]
+    @date = params[:date]
+    
+    service = WeatherService.new(@city)
+    @hourly_data = service.fetch_hourly_forecast(@date)
+    
+    if @hourly_data.is_a?(Hash) && @hourly_data[:error]
+      flash[:alert] = "Weather data could not be retrieved. Please try again later."
+      redirect_to root_path and return
+    end
+  end
 end
