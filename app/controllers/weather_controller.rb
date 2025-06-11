@@ -44,7 +44,7 @@ class WeatherController < ApplicationController
       end.compact
 
       if rain_expected
-        daily_forecast = daily_forecast.select { |day| day["rain"]&.> 0 }
+        daily_forecast = daily_forecast.select { |day| day["rain"]&.> 0.1 }
         if daily_forecast.empty?
           flash[:alert] = "No rainy days found in the forecast."
           redirect_to root_path and return
