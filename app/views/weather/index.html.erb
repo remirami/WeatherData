@@ -36,7 +36,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <%= f.text_field :city, class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Enter city name", style: "padding-left: 32px;" %>
+            <%= f.text_field :city, 
+                value: @input_params[:city].presence,
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
+                placeholder: "Enter city name", 
+                style: "padding-left: 32px;" %>
           </div>
         </div>
 
@@ -48,7 +52,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <%= f.number_field :temperature, class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Enter desired temperature", style: "padding-left: 32px;" %>
+            <%= f.number_field :temperature, 
+                value: @input_params[:temperature].presence,
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
+                placeholder: "Enter desired temperature", 
+                style: "padding-left: 32px;" %>
           </div>
         </div>
 
@@ -60,7 +68,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <%= f.number_field :day_range, class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", min: 1, max: 5, placeholder: "Enter number of days", style: "padding-left: 32px;" %>
+            <%= f.number_field :day_range, 
+                value: @input_params[:day_range].presence,
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
+                min: 1, max: 5, 
+                placeholder: "Enter number of days", 
+                style: "padding-left: 32px;" %>
           </div>
         </div>
 
@@ -73,17 +86,19 @@
               </svg>
             </div>
             <%= f.date_field :date, 
-                  class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
-                  placeholder: "Select date", 
-                  style: "padding-left: 32px;", 
-                  min: Date.today.strftime('%Y-%m-%d'), 
-                  max: (Date.today + 5).strftime('%Y-%m-%d') %>
+                value: @input_params[:date].presence,
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
+                placeholder: "Select date", 
+                style: "padding-left: 32px;", 
+                min: Date.today.strftime('%Y-%m-%d'), 
+                max: (Date.today + 5).strftime('%Y-%m-%d') %>
           </div>
         </div>
 
         <div class="flex items-center space-x-2" data-controller="rain-filter">
           <div class="relative">
             <%= f.check_box :rain_expected, 
+                checked: @input_params[:rain_expected] == "1",
                 class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded",
                 data: { 
                   action: "change->rain-filter#toggleIndicator",

@@ -1,6 +1,7 @@
 class WeatherController < ApplicationController
   def index
     # This action is for rendering the initial form
+    @input_params = flash[:input_params] || {}
   end
 
   def results
@@ -13,7 +14,7 @@ class WeatherController < ApplicationController
 
     if @city.blank? || (day_range <= 0 || day_range > 5) && params[:date].blank?
       Rails.logger.debug "Redirecting due to invalid input: City: '#{@city}', Day range: #{day_range}"
-
+      flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
       flash[:alert] = "Please enter a valid city and day range (1-5) or select a specific date."
       redirect_to root_path and return
     end
@@ -24,6 +25,7 @@ class WeatherController < ApplicationController
     if forecast.is_a?(Hash) && forecast[:error]
       Rails.logger.error "Weather API Error: #{forecast[:error]}"
       flash[:alert] = "Weather data could not be retrieved. Please try again later."
+      flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
       redirect_to root_path and return
     end
 
@@ -34,6 +36,7 @@ class WeatherController < ApplicationController
 
       if @forecast.empty?
         flash[:alert] = "No forecast found for the selected date."
+        flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
         redirect_to root_path and return
       end
     else
@@ -47,6 +50,7 @@ class WeatherController < ApplicationController
         daily_forecast = daily_forecast.select { |day| day["rain"]&.> 0.1 }
         if daily_forecast.empty?
           flash[:alert] = "No rainy days found in the forecast."
+          flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
           redirect_to root_path and return
         end
       end
@@ -56,6 +60,7 @@ class WeatherController < ApplicationController
 
       if @forecast.empty?
         flash[:alert] = "No days found matching your temperature criteria."
+        flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
         redirect_to root_path and return
       end
     end
@@ -78,6 +83,7 @@ class WeatherController < ApplicationController
 
     if @hourly_data.is_a?(Hash) && @hourly_data[:error]
       flash[:alert] = "Weather data could not be retrieved. Please try again later."
+      flash[:input_params] = params.permit(:city, :temperature, :day_range, :rain_expected, :date).to_h
       redirect_to root_path and return
     end
   end
