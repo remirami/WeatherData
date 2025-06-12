@@ -36,10 +36,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <%= f.text_field :city, 
+            <%= f.text_field :city,
                 value: @input_params[:city].presence,
-                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
-                placeholder: "Enter city name", 
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md",
+                placeholder: "Enter city name",
                 style: "padding-left: 32px;" %>
           </div>
         </div>
@@ -52,10 +52,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <%= f.number_field :temperature, 
+            <%= f.number_field :temperature,
                 value: @input_params[:temperature].presence,
-                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
-                placeholder: "Enter desired temperature", 
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md",
+                placeholder: "Enter desired temperature",
                 style: "padding-left: 32px;" %>
           </div>
         </div>
@@ -68,11 +68,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <%= f.number_field :day_range, 
+            <%= f.number_field :day_range,
                 value: @input_params[:day_range].presence,
-                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
-                min: 1, max: 5, 
-                placeholder: "Enter number of days", 
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md",
+                min: 1, max: 5,
+                placeholder: "Enter number of days",
                 style: "padding-left: 32px;" %>
           </div>
         </div>
@@ -85,26 +85,26 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <%= f.date_field :date, 
+            <%= f.date_field :date,
                 value: @input_params[:date].presence,
-                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md", 
-                placeholder: "Select date", 
-                style: "padding-left: 32px;", 
-                min: Date.today.strftime('%Y-%m-%d'), 
+                class: "bg-white focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md",
+                placeholder: "Select date",
+                style: "padding-left: 32px;",
+                min: Date.today.strftime('%Y-%m-%d'),
                 max: (Date.today + 5).strftime('%Y-%m-%d') %>
           </div>
         </div>
 
         <div class="flex items-center space-x-2" data-controller="rain-filter">
           <div class="relative">
-            <%= f.check_box :rain_expected, 
+            <%= f.check_box :rain_expected,
                 checked: @input_params[:rain_expected] == "1",
                 class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded",
-                data: { 
+                data: {
                   action: "change->rain-filter#toggleIndicator",
                   rain_filter_target: "checkbox"
                 } %>
-            <div data-rain-filter-target="indicator" 
+            <div data-rain-filter-target="indicator"
                  class="absolute -top-2 -right-2 hidden">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd" />
@@ -112,7 +112,7 @@
             </div>
           </div>
           <%= f.label :rain_expected, "Will it rain?", class: "text-sm font-medium text-gray-700" %>
-          <span data-rain-filter-target="badge" 
+          <span data-rain-filter-target="badge"
                 class="hidden ml-2 px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
             Rain filter active
           </span>
