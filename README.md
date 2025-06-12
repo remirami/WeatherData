@@ -21,7 +21,7 @@ WeatherData is a Ruby on Rails application that allows users to search for and v
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/WeatherData.git
+   git clone https://github.com/remirami/WeatherData.git
    cd WeatherData
    ```
 2. Install dependencies:
